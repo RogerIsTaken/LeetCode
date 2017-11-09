@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class MaximumSwap {
     public int maximumSwap(int num) {
-        ArrayList<Integer> array = new ArrayList<Integer>();
+        ArrayList<Integer> array = new ArrayList<>();
         String temp = String.valueOf(num);
         int[] digits = new int[temp.length()];
         for (int i = 0; i < temp.length(); i++) {
@@ -14,33 +14,33 @@ public class MaximumSwap {
             return num;
         } else {
             int swapIndex = 0;
-            for (int i = 0; i < temp.length() - 1; i++) {
-                if (digits[i] < digits[i + 1]) {
-                    swapIndex = i + 1;
+            for (int i = 1; i < temp.length(); i++) {
+                if (digits[i - 1] < digits[i]) {
+                    swapIndex = i;
+                    for (int j = swapIndex; j < temp.length(); j++) {
+                        if (digits[swapIndex] <= digits[j]) {
+                            swapIndex = j;
+                        }
+                    }
                     break;
                 }
             }
             for (int j = 0; j < swapIndex; j++) {
                 if (digits[j] < digits[swapIndex]) {
-                    int swapDigit = 0;
-                    swapDigit = digits[j];
-                    digits[j] = digits[swapIndex];
-                    digits[swapIndex] = swapDigit;
+                    StringBuilder sb = new StringBuilder(temp);
+                    sb.setCharAt(j, (char) (digits[swapIndex] + '0'));
+                    sb.setCharAt(swapIndex, (char) (digits[j] + '0'));
+                    temp = sb.toString();
                     break;
                 }
             }
-            int num1 = 0;
-            for (int i = 0; i < digits.length; i++) {
-                num1 = num1 * 10 + digits[i];
-            }
-            return num1;
         }
-
+        return Integer.valueOf(temp);
     }
 
     public static void main(String[] args) {
         MaximumSwap ms = new MaximumSwap();
-        int num = 2736;
+        int num = 12335431;
         int ret = ms.maximumSwap(num);
         System.out.println(ret);
     }
