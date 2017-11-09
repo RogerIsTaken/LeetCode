@@ -5,27 +5,29 @@ import java.util.List;
 
 public class StockTrade {
     public int maxProfitOne(int[] prices) {
-        int minPrice = prices[0];
-        int maxProfit = 0;
-        for (int i = 1; i < prices.length; i++) {
-            if (prices[i] < minPrice) {
-                minPrice = prices[i];
-            } else {
-                maxProfit = Math.max(maxProfit, prices[i] - minPrice);
+        if (prices.length == 0) {
+            return 0;
+        } else {
+            int minPrice = prices[0];
+            int maxProfit = 0;
+            for (int i = 1; i < prices.length; i++) {
+                if (prices[i] < minPrice) {
+                    minPrice = prices[i];
+                } else {
+                    maxProfit = Math.max(maxProfit, prices[i] - minPrice);
+                }
             }
+            return maxProfit;
         }
-        return maxProfit;
     }
 
     //dynamic programming
     public int maxProfitTwo(int[] prices) {
-        List<Integer> maxProfit = new ArrayList<>();
-
-        //initialize
-        for (int i = 0; i < prices.length; i++) {
-            maxProfit.add(-1);
+        int max = 0;
+        for (int i = 0; i < prices.length - 1; i++) {
+            max += Math.max(0, prices[i + 1] - prices[i]);
         }
-        return maxProfitOfLen(prices.length, prices, maxProfit);
+        return max;
     }
 
     public int maxProfitOfLen(int len, int[] prices, List<Integer> maxProfit) {
@@ -55,7 +57,18 @@ public class StockTrade {
 
 
     public int maxProfitThree(int[] prices) {
-        return 0;
+        int max = 0;
+        if (prices.length == 0) {
+            max = 0;
+        } else {
+            //the case of one transaction
+            max = maxProfitOne(prices);
+            //the case of two transactions
+            for (int i = 0; i < prices.length - 1; i++) {
+                max = Math.max(max, maxProfitWithIndex(0, i, prices) + maxProfitWithIndex(i + 1, prices.length - 1, prices));
+            }
+        }
+        return max;
     }
 
     //with trade fee
@@ -66,7 +79,8 @@ public class StockTrade {
         for (int i = 0; i < prices.length; i++) {
             maxProfit.add(-1);
         }
-        return maxProfitOfLen(prices.length, prices, maxProfit, fee);
+        int max = maxProfitOfLen(prices.length, prices, maxProfit, fee);
+        return max;
     }
 
     public int maxProfitOfLen(int len, int[] prices, List<Integer> maxProfit, int fee) {
